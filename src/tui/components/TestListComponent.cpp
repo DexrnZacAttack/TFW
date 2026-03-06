@@ -26,9 +26,13 @@ namespace tfw::tui::components {
     }
 
     ftxui::Element TestListComponent::OnRender() {
+        const int sz = (this->m_buttons.size() <= 1)
+            ? this->m_buttons.size()
+            : ((this->m_focused) / (this->m_buttons.size() - 1));
+
         return ftxui::vbox({
             // button list
-            this->m_list->Render() | ftxui::focusPositionRelative(0.0f, (this->m_focused) / (this->m_buttons.size() - 1)) | ftxui::flex | ftxui::vscroll_indicator | ftxui::yframe,
+            this->m_list->Render() | ftxui::focusPositionRelative(0.0f, sz) | ftxui::flex | ftxui::vscroll_indicator | ftxui::yframe,
             ftxui::separator(),
             // ftxui::text(std::to_string(this->m_focused)), //debug
             //bottom window
