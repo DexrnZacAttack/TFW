@@ -43,24 +43,24 @@ class TestFramework {
 
         template <typename Func, typename... Args>
         constexpr void addTest(const std::string_view &name, Func&& f, Args&&... args) {
-            this->addTest<Func, Args...>(true, std::move(std::make_unique<test::Test<Func, Args...>>(name, this->m_tui, std::forward<Func>(f), std::forward<Func>(args)...)));
+            this->addTest<Func, Args...>(true, std::move(std::make_unique<test::Test<Func, Args...>>(name, this->m_tui, std::forward<Func>(f), std::forward<Args>(args)...)));
         }
 
         template <typename Func, typename... Args>
         constexpr void addTest(const bool condition, const std::string_view &name, Func&& f, Args&&... args) {
-            this->addTest(condition, std::move(std::make_unique<test::Test<Func, Args...>>(name, this->m_tui, std::forward<Func>(f), std::forward<Func>(args)...)));
+            this->addTest(condition, std::move(std::make_unique<test::Test<Func, Args...>>(name, this->m_tui, std::forward<Func>(f), std::forward<Args>(args)...)));
         }
 
         template <typename Return, typename Func, typename... Args>
         requires std::equality_comparable<Return>
         constexpr void addComparableTest(const std::string_view &name, const Return expected, Func&& f, Args&&... args) {
-            this->addComparableTest(true, std::move(std::make_unique<test::ComparableTest<Return, Func, Args...>>(name, this->m_tui, expected, std::forward<Func>(f), std::forward<Func>(args)...)));
+            this->addComparableTest(true, std::move(std::make_unique<test::ComparableTest<Return, Func, Args...>>(name, this->m_tui, expected, std::forward<Func>(f), std::forward<Args>(args)...)));
         }
 
         template <typename Return, typename Func, typename... Args>
         requires std::equality_comparable<Return>
         constexpr void addComparableTest(const bool condition, const std::string_view &name, const Return expected, Func&& f, Args&&... args) {
-            this->addComparableTest(condition, std::move(std::make_unique<test::ComparableTest<Return, Func, Args...>>(name, this->m_tui, expected, std::forward<Func>(f), std::forward<Func>(args)...)));
+            this->addComparableTest(condition, std::move(std::make_unique<test::ComparableTest<Return, Func, Args...>>(name, this->m_tui, expected, std::forward<Func>(f), std::forward<Args>(args)...)));
         }
 
         void run();

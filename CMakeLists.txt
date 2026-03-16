@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(tfw VERSION 1.0.1)
+project(tfw VERSION 1.0.2)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -21,6 +21,7 @@ FetchContent_Declare(
         fmt
         GIT_REPOSITORY https://github.com/fmtlib/fmt
         GIT_TAG        12.1.0
+        GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(fmt)
 

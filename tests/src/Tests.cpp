@@ -5,6 +5,10 @@
 #include "TestFramework/test/exception/TestFailedException.h"
 #include <ranges>
 
+tfw::test::result::TestResult acceptParameters(tfw::test::util::TestOutputLogger &output, const int i) {
+    return { true, "I received " + std::to_string(i) };
+}
+
 int main() {
     tfw::TestFramework::getInstance()->addTest("Implicit Succeed", [](tfw::test::util::TestOutputLogger &output) {
         //will succeed because it didn't throw
@@ -31,6 +35,9 @@ int main() {
         return 1;
     });
 
+    tfw::TestFramework::getInstance()->addTest("Pass args (0)", acceptParameters, 0);
+    tfw::TestFramework::getInstance()->addTest("Pass args (1)", acceptParameters, 1);
+
     tfw::TestFramework::getInstance()->addTest("Print", [](tfw::test::util::TestOutputLogger &output) {
         constexpr std::array<const char *, 25> LINES = {
             {
@@ -43,6 +50,11 @@ int main() {
             output << line << "\n";
         }
     });
+
+    tfw::TestFramework::getInstance()->addTest("Wait 5 seconds", [](tfw::test::util::TestOutputLogger &output) {
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    });
+    
 
     tfw::TestFramework::getInstance()->run();
 

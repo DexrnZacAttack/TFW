@@ -14,10 +14,12 @@ namespace tfw {
             explicit constexpr ComparableTest(const std::string_view &name, tui::IPostable &postable, const Return expected, Func&& f, Args&&... args) : Test<Func, Args...>(name, postable, std::forward<Func>(f), std::forward<Func>(args)...), m_expected(expected) {}
 
             constexpr const result::TestResult &operator()() override {
+                auto args = std::tuple_cat(std::forward_as_tuple(this->m_logger), this->m_args);
+
                 this->m_watch.start();
 
                 try {
-                    Return r = this->m_test(this->m_logger, std::forward<Args>(this->m_args)...);
+                    Return r = std::apply(this->m_test, args);
                     this->m_watch.stop();//stop early before we do the comparison, otherwise the result is off by ~500ns
 
                     if (r == m_expected) {

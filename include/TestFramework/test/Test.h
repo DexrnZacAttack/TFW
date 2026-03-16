@@ -82,15 +82,17 @@ namespace tfw::test {
         explicit constexpr Test(const std::string_view &name, tui::IPostable &postable, Func&& f, Args&&... args) : AbstractTest(name, postable), m_test(std::forward<Func>(f)), m_args(std::forward<Args>(args)...) {}
 
         constexpr const result::TestResult &operator()() override {
+            auto args = std::tuple_cat(std::forward_as_tuple(this->m_logger), this->m_args);
+
             this->m_watch.start();
 
             try {
                 if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), util::TestOutputLogger &, Args...>, result::TestResult>) {
-                    result::TestResult r = this->m_test(this->m_logger, std::forward<Args>(this->m_args)...);
+                    result::TestResult r = std::apply(this->m_test, args);
                     this->m_watch.stop();
                     this->m_result.emplace(r);
                 } else if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), util::TestOutputLogger &, Args...>, void>) {
-                    this->m_test(this->m_logger, std::forward<Args>(this->m_args)...);
+                    std::apply(this->m_test, args);
                     this->m_watch.stop();
                     this->m_result.emplace(true);
                 } else if constexpr (std::is_same_v<decltype(*this), Test<Func, Args...>>) {
