@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <exception>
 
 namespace tfw::test::result {
     class TestResult {

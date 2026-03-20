@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(tfw VERSION 1.0.2)
+project(tfw VERSION 1.0.3)
 
 set(CMAKE_CXX_STANDARD 23)
 
