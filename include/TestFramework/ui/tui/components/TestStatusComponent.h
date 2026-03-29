@@ -8,22 +8,22 @@
 #include "ftxui/dom/elements.hpp"
 
 namespace tfw {
-    namespace tui {
-        class TUI;
+    namespace ui::tui {
+        class TerminalUserInterface;
     }
 
     class TestFramework;
 }
 
-namespace tfw::tui::components {
+namespace tfw::ui::tui::components {
     class TestStatusComponent : public ftxui::ComponentBase {
     public:
-        TestStatusComponent(TUI &tui, TestFramework &framework);
+        TestStatusComponent(TerminalUserInterface &tui, TestFramework &framework);
 
         ftxui::Element OnRender() override;
 
     private:
-        TUI &m_tui;
+        TerminalUserInterface &m_tui;
         TestFramework &m_framework;
     };
 }

@@ -5,7 +5,7 @@
 #define TFW_COLORUTIL_H
 #include "ftxui/screen/color.hpp"
 
-namespace tfw::tui::util {
+namespace tfw::ui::tui::util {
     class ColorUtil {
     public:
         static ftxui::Color lighten(const ftxui::Color c, const float amount = 0.5) {

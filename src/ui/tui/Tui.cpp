@@ -1,27 +1,26 @@
 //
 // Created by DexrnZacAttack on 3/3/26 using zPc-i2.
 //
-#include "TestFramework/tui/Tui.h"
+#include "TestFramework/ui/tui/TerminalUserInterface.h"
 
 #include "TestFramework/TestFramework.h"
 #include "TestFramework/test/Test.h"
-#include "TestFramework/tui/components/TestListComponent.h"
+#include "TestFramework/ui/tui/components/TestListComponent.h"
 #include "ftxui/Scroller.h"
 #include "ftxui/component/component.hpp"
 
-namespace tfw::tui {
-    TUI::TUI(TestFramework &framework) : m_framework(framework), currentTest(nullptr),
-                                         currentOutput(nullptr),
+namespace tfw::ui::tui {
+    TerminalUserInterface::TerminalUserInterface(TestFramework &framework) : IUserInterface(framework),
                                          m_screen(
                                              ftxui::ScreenInteractive::Fullscreen()) {
         this->m_screen.TrackMouse(true);
     }
 
-    void TUI::runRender() {
+    void TerminalUserInterface::run() {
         std::shared_ptr<components::TestListComponent> list = ftxui::Make<components::TestListComponent>(*this, this->m_framework);
         ftxui::Component output = ftxui::Scroller(ftxui::Renderer([this] {
-                        return ftxui::paragraph(this->currentOutput->str());
-                    }));
+                        return ftxui::paragraph(this->currentOutput != nullptr ? this->currentOutput->str() : "");
+        }));
 
         ftxui::Component windows = ftxui::Container::Horizontal({});
         windows->Add(list);
@@ -59,14 +58,8 @@ namespace tfw::tui {
                 | ftxui::flex
             });
         });
-        renderer |= ftxui::CatchEvent([&](ftxui::Event ev) {
+        renderer |= ftxui::CatchEvent([&](const ftxui::Event &ev) {
             if (ev == ftxui::Event::Character('q')) {
-                this->m_screen.Exit();
-                return true;
-            }
-
-            if (ev == ftxui::Event::CtrlQ) {
-                this->m_framework.useForcefulExit();
                 this->m_screen.Exit();
                 return true;
             }
@@ -83,16 +76,20 @@ namespace tfw::tui {
         this->m_screen.Loop(renderer);
     }
 
-    bool TUI::switchObservedTest(const test::AbstractTest *test) {
+    bool TerminalUserInterface::switchObservedTest(test::AbstractTest *test) {
         if (test->watch().started()) {
             this->currentTest = test;
-            this->currentOutput = &test->logger().stream();
-            this->postEvent(ftxui::Event::Custom);
+            this->currentOutput = &static_cast<test::logging::loggers::TuiTestLogger *>(test->logger())->stream();
+            this->postEvent(Event::SWITCH_OBSERVED_TEST);
 
             return true;
         }
 
         return false;
+    }
+
+    test::logging::loggers::ITestLogger * TerminalUserInterface::makeLogger() {
+        return new test::logging::loggers::TuiTestLogger(this);
     }
 
 }

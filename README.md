@@ -1,5 +1,5 @@
 # TFW (Test Framework)
-I wanted to experiment more with the STL and other concepts, so I made a TUI test framework.
+I wanted to experiment more with the STL and other concepts, so I made a TUI (+ headless) test framework.
 
 Probably isn't the best out there, but I'm still proud of it.
 

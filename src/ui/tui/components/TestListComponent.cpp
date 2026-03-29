@@ -1,19 +1,19 @@
 //
 // Created by DexrnZacAttack on 3/3/26 using zPc-i2.
 //
-#include "TestFramework/tui/components/TestListComponent.h"
+#include "TestFramework/ui/tui/components/TestListComponent.h"
 
 #include "ftxui/component/component.hpp"
 #include "TestFramework/TestFramework.h"
 #include "TestFramework/test/Test.h"
-#include "TestFramework/tui/Tui.h"
-#include "TestFramework/tui/components/TestButton.h"
-#include "TestFramework/tui/components/TestStatusComponent.h"
+#include "TestFramework/ui/tui/TerminalUserInterface.h"
+#include "TestFramework/ui/tui/components/TestButton.h"
+#include "TestFramework/ui/tui/components/TestStatusComponent.h"
 
 #include <ranges>
 
-namespace tfw::tui::components {
-    TestListComponent::TestListComponent(TUI &tui, TestFramework &framework) : m_tui(tui), m_framework(framework) {
+namespace tfw::ui::tui::components {
+    TestListComponent::TestListComponent(TerminalUserInterface &tui, TestFramework &framework) : m_tui(tui), m_framework(framework) {
         this->m_buttons = this->m_framework.tests()
         | std::views::enumerate
         | std::views::transform([&](auto p) {
@@ -26,13 +26,13 @@ namespace tfw::tui::components {
     }
 
     ftxui::Element TestListComponent::OnRender() {
-        const int sz = (this->m_buttons.size() <= 1)
-            ? this->m_buttons.size()
-            : ((this->m_focused) / (this->m_buttons.size() - 1));
+        const float pos = m_buttons.empty()
+                  ? 0.0f
+                  : static_cast<float>(this->m_focused) / static_cast<float>(this->m_buttons.size());
 
         return ftxui::vbox({
             // button list
-            this->m_list->Render() | ftxui::focusPositionRelative(0.0f, sz) | ftxui::flex | ftxui::vscroll_indicator | ftxui::yframe,
+            this->m_list->Render() | ftxui::focusPositionRelative(0.0f, pos) | ftxui::vscroll_indicator | ftxui::yframe | ftxui::flex,
             ftxui::separator(),
             // ftxui::text(std::to_string(this->m_focused)), //debug
             //bottom window

@@ -1,13 +1,13 @@
 //
 // Created by DexrnZacAttack on 3/3/26 using zPc-i2.
 //
-#include "TestFramework/tui/components/TestStatusComponent.h"
+#include "TestFramework/ui/tui/components/TestStatusComponent.h"
 
 #include "TestFramework/TestFramework.h"
 #include <fmt/format.h>
 
-namespace tfw::tui::components {
-    TestStatusComponent::TestStatusComponent(TUI &tui, TestFramework &framework) : m_tui(tui), m_framework(framework) {
+namespace tfw::ui::tui::components {
+    TestStatusComponent::TestStatusComponent(TerminalUserInterface &tui, TestFramework &framework) : m_tui(tui), m_framework(framework) {
     }
 
     ftxui::Element TestStatusComponent::OnRender() {

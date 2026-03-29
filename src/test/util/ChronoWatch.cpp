@@ -40,6 +40,10 @@ namespace tfw::test::util {
     }
 
     std::string ChronoWatch::duration() const {
+        if (!this->stopped()) {
+            return "Not finished";
+        }
+
         // hunk of junk
         static std::array<std::pair<std::pair<const char *, const char *>, std::function<double(std::chrono::nanoseconds &)>>, 4> s_converters = {{
         { {"h", ":"}, [](std::chrono::nanoseconds &ns) { return dec<std::chrono::hours>(ns).count();       } },

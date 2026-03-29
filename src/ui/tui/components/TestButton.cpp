@@ -1,15 +1,15 @@
 //
 // Created by DexrnZacAttack on 3/4/26 using zPc-i2.
 //
-#include "TestFramework/tui/components/TestButton.h"
+#include "TestFramework/ui/tui/components/TestButton.h"
 
 #include "ftxui/component/component.hpp"
 #include "TestFramework/test/Test.h"
-#include "TestFramework/tui/util/ColorUtil.h"
+#include "TestFramework/ui/tui/util/ColorUtil.h"
 
 #include <fmt/format.h>
 
-namespace tfw::tui::components {
+namespace tfw::ui::tui::components {
     TestButton::TestButton(const Options &options) : m_hovered(
         false), m_options(options) {
     }

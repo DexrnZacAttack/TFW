@@ -11,7 +11,7 @@ namespace tfw::test {
     class AbstractTest;
 }
 
-namespace tfw::tui::components {
+namespace tfw::ui::tui::components {
     class TestButton : public ftxui::ComponentBase {
     public:
         struct Options {

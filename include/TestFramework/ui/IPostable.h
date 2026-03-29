@@ -4,14 +4,14 @@
 #ifndef TFW_IPOSTABLE_H
 #define TFW_IPOSTABLE_H
 
-#include "ftxui/component/event.hpp"
+#include "TestFramework/ui/Event.h"
 
-namespace tfw::tui {
+namespace tfw::ui {
     class IPostable {
     public:
         virtual ~IPostable() = default;
 
-        virtual void postEvent(const ftxui::Event &ev) = 0;
+        virtual void postEvent(const Event &ev) = 0;
     };
 }
 

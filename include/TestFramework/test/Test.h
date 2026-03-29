@@ -4,9 +4,10 @@
 #ifndef TFW_TEST_H
 #define TFW_TEST_H
 #include "TestFramework/test/exception/TestFailedException.h"
+#include "TestFramework/test/logging/ITestLoggerProvider.h"
 #include "TestFramework/test/util/ChronoWatch.h"
 #include "fmt/args.h"
-#include "util/TestOutputLogger.h"
+#include "TestFramework/test/logging/loggers/TuiTestLogger.h"
 #include "result/TestResult.h"
 
 #include <exception>
@@ -15,7 +16,7 @@
 #include <utility>
 
 namespace tfw::tui {
-    class TUI;
+    class TerminalUserInterface;
 }
 
 namespace tfw::test {
@@ -23,7 +24,7 @@ namespace tfw::test {
     public:
         virtual ~AbstractTest() = default;
 
-        explicit constexpr AbstractTest(const std::string_view &name, tui::IPostable &postable) : m_postable(postable), m_logger(postable), m_name(
+        explicit constexpr AbstractTest(const std::string_view &name, ui::IPostable *postable, logging::ITestLoggerProvider *loggerProvider) : m_postable(postable), m_logger(loggerProvider->makeLogger()), m_name(
             name) {
         }
 
@@ -37,11 +38,11 @@ namespace tfw::test {
             return this->m_result;
         }
 
-        const util::TestOutputLogger &logger() const noexcept {
+        const logging::loggers::ITestLogger *logger() const noexcept {
             return this->m_logger;
         }
 
-        util::TestOutputLogger &logger() noexcept {
+        logging::loggers::ITestLogger *logger() noexcept {
             return this->m_logger;
         }
 
@@ -66,32 +67,38 @@ namespace tfw::test {
         }
 
     protected:
-        tui::IPostable &m_postable;
+        ui::IPostable *m_postable;
 
-        util::TestOutputLogger m_logger;
+        logging::loggers::ITestLogger *m_logger;
         std::optional<result::TestResult> m_result;
         util::ChronoWatch m_watch;
     private:
         const std::string_view m_name;
     };
 
+    template <typename T>
+    concept PostableLoggerProvider = std::is_base_of_v<ui::IPostable, T> && std::is_base_of_v<logging::ITestLoggerProvider, T>;
+
     template<typename Func, typename... Args>
-    requires std::invocable<Func, util::TestOutputLogger &, Args...>
+    requires std::invocable<Func, logging::loggers::ITestLogger &, Args...>
     class Test : public AbstractTest {
     public:
-        explicit constexpr Test(const std::string_view &name, tui::IPostable &postable, Func&& f, Args&&... args) : AbstractTest(name, postable), m_test(std::forward<Func>(f)), m_args(std::forward<Args>(args)...) {}
+        explicit constexpr Test(const std::string_view &name, ui::IPostable *postable, logging::ITestLoggerProvider *loggerProvider, Func&& f, Args&&... args) : AbstractTest(name, postable, loggerProvider), m_test(std::forward<Func>(f)), m_args(std::forward<Args>(args)...) {}
+
+        template <PostableLoggerProvider Provider>
+        explicit constexpr Test(const std::string_view &name, Provider *postableLoggerProvider, Func&& f, Args&&... args) : AbstractTest(name, postableLoggerProvider, postableLoggerProvider), m_test(std::forward<Func>(f)), m_args(std::forward<Args>(args)...) {}
 
         constexpr const result::TestResult &operator()() override {
-            auto args = std::tuple_cat(std::forward_as_tuple(this->m_logger), this->m_args);
+            auto args = std::tuple_cat(std::forward_as_tuple(*this->m_logger), this->m_args);
 
             this->m_watch.start();
 
             try {
-                if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), util::TestOutputLogger &, Args...>, result::TestResult>) {
+                if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), logging::loggers::ITestLogger &, Args...>, result::TestResult>) {
                     result::TestResult r = std::apply(this->m_test, args);
                     this->m_watch.stop();
                     this->m_result.emplace(r);
-                } else if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), util::TestOutputLogger &, Args...>, void>) {
+                } else if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), logging::loggers::ITestLogger &, Args...>, void>) {
                     std::apply(this->m_test, args);
                     this->m_watch.stop();
                     this->m_result.emplace(true);

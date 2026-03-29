@@ -5,7 +5,7 @@
 #define TFW_TESTLISTCOMPONENT_H
 #include "ftxui/component/component_base.hpp"
 #include "ftxui/component/component.hpp"
-#include "TestFramework/tui/components/TestButton.h"
+#include "TestFramework/ui/tui/components/TestButton.h"
 #include "ftxui/dom/elements.hpp"
 
 namespace tfw {
@@ -17,15 +17,15 @@ namespace tfw {
 }
 
 namespace tfw {
-    namespace tui {
-        class TUI;
+    namespace ui::tui {
+        class TerminalUserInterface;
     }
 }
 
-namespace tfw::tui::components {
+namespace tfw::ui::tui::components {
     class TestListComponent : public ftxui::ComponentBase {
     public:
-        TestListComponent(TUI &tui, TestFramework &framework);
+        TestListComponent(TerminalUserInterface &tui, TestFramework &framework);
 
         ftxui::Element OnRender() override;
     private:
@@ -36,7 +36,7 @@ namespace tfw::tui::components {
         ftxui::Components m_buttons;
 
 
-        TUI &m_tui;
+        TerminalUserInterface &m_tui;
         TestFramework &m_framework;
     };
 }
