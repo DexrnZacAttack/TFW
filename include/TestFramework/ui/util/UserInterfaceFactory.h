@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_USERINTERFACEFACTORY_H
-#define LODESTONE_USERINTERFACEFACTORY_H
+#ifndef TFW_USERINTERFACEFACTORY_H
+#define TFW_USERINTERFACEFACTORY_H
 #include "TestFramework/ui/EUserInterface.h"
 #include "TestFramework/ui/IUserInterface.h"
 
@@ -25,4 +25,4 @@ namespace tfw::ui::util {
     };
 }
 
-#endif // LODESTONE_USERINTERFACEFACTORY_H
+#endif // TFW_USERINTERFACEFACTORY_H

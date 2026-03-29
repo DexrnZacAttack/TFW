@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_EUSERINTERFACE_H
-#define LODESTONE_EUSERINTERFACE_H
+#ifndef TFW_EUSERINTERFACE_H
+#define TFW_EUSERINTERFACE_H
 
 namespace tfw::ui {
     enum class EUserInterface {
@@ -15,4 +15,4 @@ namespace tfw::ui {
     };
 }
 
-#endif // LODESTONE_EUSERINTERFACE_H
+#endif // TFW_EUSERINTERFACE_H

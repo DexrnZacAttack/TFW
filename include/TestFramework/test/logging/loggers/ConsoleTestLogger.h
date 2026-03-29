@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_CONSOLETESTLOGGER_H
-#define LODESTONE_CONSOLETESTLOGGER_H
+#ifndef TFW_CONSOLETESTLOGGER_H
+#define TFW_CONSOLETESTLOGGER_H
 #include "TestFramework/test/logging/loggers/ITestLogger.h"
 
 namespace tfw::test::logging::loggers {
@@ -30,4 +30,4 @@ namespace tfw::test::logging::loggers {
     };
 }
 
-#endif // LODESTONE_CONSOLETESTLOGGER_H
+#endif // TFW_CONSOLETESTLOGGER_H

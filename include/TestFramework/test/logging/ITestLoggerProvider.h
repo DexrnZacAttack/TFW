@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_ITESTLOGGERPROVIDER_H
-#define LODESTONE_ITESTLOGGERPROVIDER_H
+#ifndef TFW_ITESTLOGGERPROVIDER_H
+#define TFW_ITESTLOGGERPROVIDER_H
 #include "TestFramework/test/logging/loggers/ITestLogger.h"
 
 namespace tfw::test::logging {
@@ -18,4 +18,4 @@ namespace tfw::test::logging {
     };
 }
 
-#endif // LODESTONE_ITESTLOGGERPROVIDER_H
+#endif // TFW_ITESTLOGGERPROVIDER_H

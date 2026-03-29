@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_ARGUMINTEGRATION_H
-#define LODESTONE_ARGUMINTEGRATION_H
+#ifndef TFW_ARGUMINTEGRATION_H
+#define TFW_ARGUMINTEGRATION_H
 #include "TestFramework/ui/EUserInterface.h"
 
 #include <argum/argum.h>
@@ -20,4 +20,4 @@ namespace tfw::integration {
     };
 }
 
-#endif // LODESTONE_ARGUMINTEGRATION_H
+#endif // TFW_ARGUMINTEGRATION_H

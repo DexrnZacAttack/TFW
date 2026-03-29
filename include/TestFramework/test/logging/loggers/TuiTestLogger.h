@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_TUITESTLOGGER_H
-#define LODESTONE_TUITESTLOGGER_H
+#ifndef TFW_TUITESTLOGGER_H
+#define TFW_TUITESTLOGGER_H
 #include "TestFramework/test/logging/loggers/ITestLogger.h"
 
 namespace tfw::test::logging::loggers {
@@ -43,4 +43,4 @@ namespace tfw::test::logging::loggers {
     };
 }
 
-#endif // LODESTONE_TUITESTLOGGER_H
+#endif // TFW_TUITESTLOGGER_H

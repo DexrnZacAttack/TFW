@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_IUSERINTERFACE_H
-#define LODESTONE_IUSERINTERFACE_H
+#ifndef TFW_IUSERINTERFACE_H
+#define TFW_IUSERINTERFACE_H
 #include "TestFramework/test/logging/ITestLoggerProvider.h"
 #include "TestFramework/ui/IPostable.h"
 
@@ -36,4 +36,4 @@ namespace tfw::ui {
     };
 }
 
-#endif // LODESTONE_IUSERINTERFACE_H
+#endif // TFW_IUSERINTERFACE_H

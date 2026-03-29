@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_EVENT_H
-#define LODESTONE_EVENT_H
+#ifndef TFW_EVENT_H
+#define TFW_EVENT_H
 
 namespace tfw::ui {
     enum class Event {
@@ -21,4 +21,4 @@ namespace tfw::ui {
     };
 }
 
-#endif // LODESTONE_EVENT_H
+#endif // TFW_EVENT_H

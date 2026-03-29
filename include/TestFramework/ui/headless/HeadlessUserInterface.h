@@ -5,8 +5,8 @@
  * 
  * @device zPc-i2
  */
-#ifndef LODESTONE_HEADLESSUSERINTERFACE_H
-#define LODESTONE_HEADLESSUSERINTERFACE_H
+#ifndef TFW_HEADLESSUSERINTERFACE_H
+#define TFW_HEADLESSUSERINTERFACE_H
 #include "TestFramework/ui/IUserInterface.h"
 
 namespace tfw::ui::headless {
@@ -26,4 +26,4 @@ namespace tfw::ui::headless {
     };
 }
 
-#endif // LODESTONE_HEADLESSUSERINTERFACE_H
+#endif // TFW_HEADLESSUSERINTERFACE_H
