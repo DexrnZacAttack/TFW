@@ -20,7 +20,9 @@ namespace tfw::test {
 
             this->m_watch.start();
 
+#ifndef TFW_NO_SWALLOW_EXCEPTIONS
             try {
+#endif
                 Return r = std::apply(this->m_test, args);
                 this->m_watch.stop();//stop early before we do the comparison, otherwise the result is off by ~500ns
 
@@ -29,10 +31,12 @@ namespace tfw::test {
                 } else {
                     this->m_result.emplace(r == m_expected, "Return value does not match expected value");
                 }
+#ifndef TFW_NO_SWALLOW_EXCEPTIONS
             } catch (...) {
                 this->m_watch.stop();
                 this->m_result.emplace(false, std::current_exception());
             }
+#endif
 
             return this->m_result.value();
         }

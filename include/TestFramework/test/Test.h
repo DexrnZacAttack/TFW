@@ -93,7 +93,9 @@ namespace tfw::test {
 
             this->m_watch.start();
 
+#ifndef TFW_NO_SWALLOW_EXCEPTIONS
             try {
+#endif
                 if constexpr (std::same_as<std::invoke_result_t<decltype(this->m_test), logging::loggers::ITestLogger &, Args...>, result::TestResult>) {
                     result::TestResult r = std::apply(this->m_test, args);
                     this->m_watch.stop();
@@ -105,10 +107,12 @@ namespace tfw::test {
                 } else if constexpr (std::is_same_v<decltype(*this), Test<Func, Args...>>) {
                     static_assert(false, "Provided function needs to return either void or a TestResult.");
                 }
+#ifndef TFW_NO_SWALLOW_EXCEPTIONS
             } catch (...) {
                 this->m_watch.stop();
                 this->m_result.emplace(false, std::current_exception());
             }
+#endif
 
             return this->m_result.value();
         }
