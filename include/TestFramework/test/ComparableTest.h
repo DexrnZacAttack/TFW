@@ -13,7 +13,7 @@ namespace tfw::test {
         explicit constexpr ComparableTest(const std::string_view &name, ui::IPostable *postable, logging::ITestLoggerProvider *loggerProvider, const Return expected, Func&& f, Args&&... args) : Test<Func, Args...>(name, postable, loggerProvider, std::forward<Func>(f), std::forward<Args>(args)...), m_expected(expected) {}
 
         template <PostableLoggerProvider Provider>
-        explicit constexpr ComparableTest(const std::string_view &name, Provider *postableLoggerProvider, Func&& f, Args&&... args) : Test<Func, Args...>(name, postableLoggerProvider, std::forward<Func>(f), std::forward<Args>(args)...) {}
+        explicit constexpr ComparableTest(const std::string_view &name, Provider *postableLoggerProvider, const Return expected, Func&& f, Args&&... args) : ComparableTest(name, postableLoggerProvider, postableLoggerProvider, expected, std::forward<Func>(f), std::forward<Args>(args)...) {}
 
         constexpr const result::TestResult &operator()() override {
             auto args = std::tuple_cat(std::forward_as_tuple(*this->m_logger), this->m_args);

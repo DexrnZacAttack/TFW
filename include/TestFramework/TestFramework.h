@@ -15,17 +15,25 @@
 
 namespace tfw {
     class TestFramework {
-    public:
+    private:
         explicit TestFramework(ui::EUserInterface ui);
-
-        /** Parses args from the main function and returns a new TestFramework
+    public:
+        /** Parses args from the main function and initializes TestFramework
          *
          * ### Args:
          * - @code--ui-mode@endcode: Selects which user interface to use
          *   - terminal
          *   - headless
          */
-        static TestFramework fromArgs(int argc, char *argv[]);
+        static TestFramework *initFromArgs(int argc, char *argv[]);
+        /** Initializes TestFramework with the given UI type */
+        static TestFramework *init(ui::EUserInterface ui);
+
+        /** Returns the global TestFramework instance
+         *
+         * @throws std::invalid_argument if TestFramework::init/initFromArgs has not been called yet.
+         */
+        static TestFramework *getInstance();
 
         template <typename Func, typename... Args>
         constexpr void addTest(const bool condition, std::unique_ptr<test::Test<Func, Args...> > test) {
@@ -94,9 +102,11 @@ namespace tfw {
         }
 
     private:
+
         void exit();
 
     private:
+        static TestFramework *s_instance;
         std::unique_ptr<tfw::ui::IUserInterface> m_ui;
 
         /// Thread that runs the tasks

@@ -20,10 +20,12 @@
 #include <ranges>
 
 namespace tfw {
+    TestFramework *TestFramework::s_instance = nullptr;
+
     TestFramework::TestFramework(const ui::EUserInterface ui) : m_ui(ui::util::UserInterfaceFactory::get(*this, ui)) {
     }
 
-    TestFramework TestFramework::fromArgs(const int argc, char *argv[]) {
+    TestFramework *TestFramework::initFromArgs(const int argc, char *argv[]) {
         ui::EUserInterface type = ui::EUserInterface::TERMINAL;
 
         Argum::Parser parser;
@@ -40,8 +42,23 @@ namespace tfw {
 
         parser.parse(argc, argv);
 
-        return TestFramework(type);
+        s_instance = new TestFramework(type);
+
+        return getInstance();
     }
+
+    TestFramework *TestFramework::init(const ui::EUserInterface ui) {
+        s_instance = new TestFramework(ui);
+        return getInstance();
+    }
+
+    TestFramework *TestFramework::getInstance() {
+        if (s_instance == nullptr)
+            throw std::invalid_argument("TestFramework has not been initialized yet.");
+
+        return s_instance;
+    }
+
 
     void TestFramework::run() {
         //task runner
