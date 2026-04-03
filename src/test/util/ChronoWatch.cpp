@@ -5,6 +5,7 @@
 
 #include <cstring>
 #include <functional>
+#include <iomanip>
 
 namespace tfw::test::util {
     void ChronoWatch::start() {
