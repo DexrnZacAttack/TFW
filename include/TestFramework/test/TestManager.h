@@ -40,6 +40,8 @@ namespace tfw::test {
 
         std::vector<std::unique_ptr<tests::AbstractTest>> &tests() { return this->m_tests; }
 
+        tests::AbstractTest *testAt(const size_t idx) const { return (this->m_tests.size() >= idx) ? this->m_tests[idx].get() : nullptr; }
+
         const std::atomic<tests::AbstractTest *> &currentTest() const { return this->m_runningTest; }
 
         std::atomic<tests::AbstractTest *> &currentTest() { return this->m_runningTest; }
