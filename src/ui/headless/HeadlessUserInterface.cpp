@@ -7,8 +7,9 @@
  */
 #include "TestFramework/ui/headless/HeadlessUserInterface.h"
 
+#include "TestFramework/test/tests/Test.h"
+#include "TestFramework/test/tests/AbstractTest.h"
 #include "TestFramework/TestFramework.h"
-#include "TestFramework/test/Test.h"
 #include "TestFramework/test/logging/loggers/ConsoleTestLogger.h"
 
 #include <iostream>
@@ -40,12 +41,12 @@ namespace tfw::ui::headless {
 
     void HeadlessUserInterface::run() {
         //stall until all tests are finished
-        while (m_testsRan != this->m_framework.tests().size()) {}
+        while (m_testsRan != m_framework.testManager().tests().size()) {}
 
         //they're finished, print results
         std::println("\n");
         std::println("=============== Results ===============");
-        for (auto &t : this->m_framework.tests()) {
+        for (auto &t : m_framework.testManager().tests()) {
             std::println("\nTest: '{}'", t->name());
             std::println("Duration: {}", t->watch().duration());
             if (t->result().has_value()) {

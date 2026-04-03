@@ -8,6 +8,7 @@
 #ifndef TFW_TUITESTLOGGER_H
 #define TFW_TUITESTLOGGER_H
 #include "TestFramework/test/logging/loggers/ITestLogger.h"
+#include <sstream>
 
 namespace tfw::test::logging::loggers {
     class TuiTestLogger : public logging::loggers::ITestLogger {

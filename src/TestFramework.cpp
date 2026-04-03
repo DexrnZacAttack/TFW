@@ -5,16 +5,16 @@
 
 #include "TestFramework/integration/ArgumIntegration.h"
 
-#include <argum/argum.h>
-#include "fmt/base.h"
-#include "TestFramework/test/Test.h"
+#include "TestFramework/test/tests/Test.h"
 #include "TestFramework/ui/EUserInterface.h"
 #include "TestFramework/ui/util/UserInterfaceFactory.h"
+#include "fmt/base.h"
+#include <argum/argum.h>
 
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/screen_interactive.hpp"
 #include <algorithm>
 #include <future>
-#include "ftxui/component/screen_interactive.hpp"
-#include "ftxui/component/component.hpp"
 
 #include <random>
 #include <ranges>
@@ -22,23 +22,19 @@
 namespace tfw {
     TestFramework *TestFramework::s_instance = nullptr;
 
-    TestFramework::TestFramework(const ui::EUserInterface ui) : m_ui(ui::util::UserInterfaceFactory::get(*this, ui)) {
-    }
+    TestFramework::TestFramework(const ui::EUserInterface ui) : m_ui(ui::util::UserInterfaceFactory::get(*this, ui)), m_testManager(m_ui.get()) {}
 
     TestFramework *TestFramework::initFromArgs(const int argc, char *argv[]) {
         ui::EUserInterface type = ui::EUserInterface::TERMINAL;
 
         Argum::Parser parser;
-        parser.add(
-            Argum::Option("--help", "-h").
-            help("show this help message and exit").
-            handler([&]() {
-            std::cout << parser.formatHelp("TFW");
-        }));
+        parser.add(integration::ArgumIntegration::getUserInterfaceTypeOption(type));
 
-        parser.add(
-            integration::ArgumIntegration::getUserInterfaceTypeOption(type)
-        );
+        parser.add(Argum::Option("--help", "-h").help("show this help message and exit").handler([&]() {
+            const Argum::Colorizer c = Argum::colorizerForFile(Argum::environmentColorStatus(), stdout);
+            std::cout << parser.formatHelp(argc ? argv[0] : "TFW", Argum::terminalWidth(stdout), c);
+            std::exit(EXIT_SUCCESS);
+        }));
 
         parser.parse(argc, argv);
 
@@ -59,57 +55,44 @@ namespace tfw {
         return s_instance;
     }
 
+    test::TestManager &TestFramework::testManager() { return this->m_testManager; }
 
     void TestFramework::run() {
-        //task runner
+        // task runner
         this->m_taskRunnerThread = std::jthread([this](const std::stop_token &stop) {
             // for each task, run it
-            std::ranges::for_each(this->m_tests | std::ranges::views::enumerate,
-                                  [this, &stop](const std::pair<int, const std::unique_ptr<tfw::test::AbstractTest> &> &t) {
-                                      if (stop.stop_requested())
-                                          return;
+            std::ranges::for_each(this->m_testManager.tests(), [this, &stop](const std::unique_ptr<tfw::test::tests::AbstractTest> &test) {
+                if (stop.stop_requested())
+                    return;
 
-                                      const std::unique_ptr<tfw::test::AbstractTest> &test = t.second;
-                                      int idx = t.first;
+                // stage test
+                test::TestManager::StagedTestRunner runner = this->m_testManager.stage(test.get());
 
-                                      //create new shit for this test
-                                      this->m_runningTest = test.get();
+                this->m_ui->currentTest = test.get();
+                this->m_ui->postEvent(ui::Event::TEST_STARTING); // tell gui to rerender
 
-                                      this->m_ui->currentTest = test.get();
-                                      this->m_ui->postEvent(ui::Event::TEST_STARTING); //tell gui to rerender
-
-                                      //start
-                                      this->m_currentFuture =
-                                          std::async(
-                                              std::launch::async,
-                                              test->asFunction());
-                                      while (this->m_currentFuture.wait_for(
-                                                 std::chrono::milliseconds(0))
-                                             != std::future_status::ready) {
-                                      }
-
-                                      //we have our results, let's save them
-                                      m_results.emplace(idx,
-                                                        std::make_pair(test.get(), std::move(this->m_currentFuture.get()))
-                                          );
-
-                                      this->m_ui->postEvent(ui::Event::TEST_FINISHED); //test finished, tell gui to rerender
-                                  });
+                // start
+                runner
+                    .then([this](tfw::test::tests::AbstractTest *, test::result::TestResult) {
+                        this->m_ui->postEvent(ui::Event::TEST_FINISHED); // test finished, tell gui to rerender
+                    })
+                    .run();
+            });
         });
 
-        //start gui loop
+        // start gui loop
         this->m_ui->run();
 
-        //if we left the render loop, we have quit the program.
+        // if we left the render loop, we have quit the program.
         this->exit();
     }
 
     void TestFramework::exit() {
         this->m_taskRunnerThread.request_stop();
 
-        if (const test::AbstractTest *t = this->m_runningTest.load(); t != nullptr && !t->isComplete())
-            fmt::println("Waiting for test '{}' to finish.", this->m_runningTest.load()->name());
+        if (const tfw::test::tests::AbstractTest *t = this->m_testManager.currentTest().load(); t != nullptr && !t->isComplete())
+            fmt::println("Waiting for test '{}' to finish.", t->name());
 
-        this->m_taskRunnerThread.join(); //wait for the thread
+        this->m_taskRunnerThread.join(); // wait for the thread
     }
-} // tfw
+} // namespace tfw

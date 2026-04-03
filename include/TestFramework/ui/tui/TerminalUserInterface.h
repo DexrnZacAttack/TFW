@@ -6,11 +6,8 @@
 #include "TestFramework/test/logging/ITestLoggerProvider.h"
 #include "TestFramework/ui/IPostable.h"
 #include "TestFramework/ui/IUserInterface.h"
-#include "ftxui/component/loop.hpp"
 
 #include "ftxui/component/screen_interactive.hpp"
-
-#include <atomic>
 
 namespace tfw::ui::tui {
     class TerminalUserInterface : public ui::IUserInterface {
@@ -19,7 +16,7 @@ namespace tfw::ui::tui {
 
         void run() override;
 
-        bool switchObservedTest(test::AbstractTest *test);
+        bool switchObservedTest(tfw::test::tests::AbstractTest *test);
 
         void postEvent(const ui::Event &ev) override {
             this->m_screen.PostEvent(ftxui::Event::Custom);

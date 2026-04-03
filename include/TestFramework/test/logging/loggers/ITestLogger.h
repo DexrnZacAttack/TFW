@@ -4,7 +4,6 @@
 #ifndef TFW_TESTOUTPUTLOGGER_H
 #define TFW_TESTOUTPUTLOGGER_H
 #include "TestFramework/ui/IPostable.h"
-#include "ftxui/component/screen_interactive.hpp"
 
 #include <iosfwd>
 #include <iostream>

@@ -4,9 +4,6 @@
 #ifndef TFW_CHRONOWATCH_H
 #define TFW_CHRONOWATCH_H
 #include <chrono>
-#include <functional>
-#include <unordered_map>
-#include <iomanip>
 
 namespace tfw::test::util {
         class ChronoWatch {

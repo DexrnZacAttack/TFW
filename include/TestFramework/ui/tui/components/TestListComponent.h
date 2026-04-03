@@ -29,7 +29,7 @@ namespace tfw::ui::tui::components {
 
         ftxui::Element OnRender() override;
     private:
-        ftxui::Component transformTest(std::tuple<long, const std::unique_ptr<test::AbstractTest> &> p) const;
+        ftxui::Component transformTest(std::tuple<long, const std::unique_ptr<tfw::test::tests::AbstractTest> &> p) const;
     private:
         int m_focused = 0;
         ftxui::Component m_list;

@@ -3,11 +3,12 @@
 //
 #include "TestFramework/ui/tui/TerminalUserInterface.h"
 
+#include "TestFramework/test/tests/Test.h"
 #include "TestFramework/TestFramework.h"
-#include "TestFramework/test/Test.h"
 #include "TestFramework/ui/tui/components/TestListComponent.h"
 #include "ftxui/Scroller.h"
 #include "ftxui/component/component.hpp"
+#include "ftxui/component/loop.hpp"
 
 namespace tfw::ui::tui {
     TerminalUserInterface::TerminalUserInterface(TestFramework &framework) : IUserInterface(framework),
@@ -27,16 +28,22 @@ namespace tfw::ui::tui {
         windows->Add(output);
 
         auto renderer = ftxui::Renderer(windows, [this, windows, list, output] {
+            std::string testName = "No test selected";
+            if (this->currentTest != nullptr) {
+                testName = std::string(this->currentTest.load()->name());
+            }
+
             return ftxui::hbox({
                 //window on left side of screen showing tests
                 ftxui::window(ftxui::text("Tests"), list->Render())
                 | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 75),
                 //window on right side of screen showing focused test log output
                 ftxui::window(
-                    ftxui::text(std::string(this->currentTest.load()->name())),
+                    ftxui::text(testName),
                     [this, &output] {
-                            const test::AbstractTest *t = this->currentTest.load();
-                            if (t->result().has_value()) {
+                            const tfw::test::tests::AbstractTest *t = this->currentTest.load();
+
+                            if (t != nullptr && t->result().has_value()) {
                                 test::result::TestResult res = t->result().value();
 
                                 return ftxui::vbox({
@@ -65,7 +72,7 @@ namespace tfw::ui::tui {
             }
 
             if (ev == ftxui::Event::Character('t')) {
-                return this->switchObservedTest(this->m_framework.currentTest());
+                return this->switchObservedTest(this->m_framework.testManager().currentTest());
             }
 
             return false;
@@ -76,8 +83,8 @@ namespace tfw::ui::tui {
         this->m_screen.Loop(renderer);
     }
 
-    bool TerminalUserInterface::switchObservedTest(test::AbstractTest *test) {
-        if (test->watch().started()) {
+    bool TerminalUserInterface::switchObservedTest(tfw::test::tests::AbstractTest *test) {
+        if (test != nullptr && test->watch().started()) {
             this->currentTest = test;
             this->currentOutput = &static_cast<test::logging::loggers::TuiTestLogger *>(test->logger())->stream();
             this->postEvent(Event::SWITCH_OBSERVED_TEST);

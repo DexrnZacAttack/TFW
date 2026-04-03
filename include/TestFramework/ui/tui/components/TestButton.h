@@ -5,9 +5,8 @@
 #define TFW_TESTBUTTON_H
 #include "ftxui/component/component_options.hpp"
 #include "ftxui/component/component_base.hpp"
-#include "ftxui/component/event.hpp"
 
-namespace tfw::test {
+namespace tfw::test::tests {
     class AbstractTest;
 }
 
@@ -24,7 +23,7 @@ namespace tfw::ui::tui::components {
                 HoverableAnimatedColorOption background;
             };
 
-            test::AbstractTest *test;
+            tfw::test::tests::AbstractTest *test;
 
             std::function<void(TestButton &button)> invokeEvent = [](TestButton &button) {};
 
@@ -32,11 +31,11 @@ namespace tfw::ui::tui::components {
         };
 
         explicit TestButton(const Options &options);
-        TestButton(test::AbstractTest *test, const std::function<void(TestButton &button)> &invokeEvent, const Options &options);
-        TestButton(test::AbstractTest *test, const std::function<void(TestButton &button)> &invokeEvent);
+        TestButton(tfw::test::tests::AbstractTest *test, const std::function<void(TestButton &button)> &invokeEvent, const Options &options);
+        TestButton(tfw::test::tests::AbstractTest *test, const std::function<void(TestButton &button)> &invokeEvent);
 
-        static std::shared_ptr<TestButton> create(test::AbstractTest *test, std::function<void(TestButton &button)> invokeEvent, Options options);
-        static std::shared_ptr<TestButton> create(test::AbstractTest *test, std::function<void(TestButton &button)> invokeEvent);
+        static std::shared_ptr<TestButton> create(tfw::test::tests::AbstractTest *test, std::function<void(TestButton &button)> invokeEvent, Options options);
+        static std::shared_ptr<TestButton> create(tfw::test::tests::AbstractTest *test, std::function<void(TestButton &button)> invokeEvent);
 
         ftxui::Element OnRender() override;
         bool OnEvent(ftxui::Event) override;
@@ -46,8 +45,8 @@ namespace tfw::ui::tui::components {
         bool Focusable() const override;
         bool active() const;
 
-        static ftxui::Color getColor(const test::AbstractTest *test);
-        static Options::HoverableAnimatedColorOptions getColorOptions(const test::AbstractTest *test);
+        static ftxui::Color getColor(const tfw::test::tests::AbstractTest *test);
+        static Options::HoverableAnimatedColorOptions getColorOptions(const tfw::test::tests::AbstractTest *test);
     private:
         bool m_hovered;
         ftxui::Box m_bb;

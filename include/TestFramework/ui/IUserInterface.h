@@ -8,6 +8,7 @@
 #ifndef TFW_IUSERINTERFACE_H
 #define TFW_IUSERINTERFACE_H
 #include "TestFramework/test/logging/ITestLoggerProvider.h"
+#include "TestFramework/test/tests/AbstractTest.h"
 #include "TestFramework/ui/IPostable.h"
 
 #include <atomic>
@@ -31,7 +32,7 @@ namespace tfw::ui {
         TestFramework &m_framework;
     public:
         //state
-        std::atomic<test::AbstractTest *> currentTest;
+        std::atomic<tfw::test::tests::AbstractTest *> currentTest;
         const std::stringstream *currentOutput; // this is probably nasty when paired with threading, but it works so idc
     };
 }

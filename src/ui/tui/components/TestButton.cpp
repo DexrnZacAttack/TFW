@@ -3,9 +3,10 @@
 //
 #include "TestFramework/ui/tui/components/TestButton.h"
 
-#include "ftxui/component/component.hpp"
-#include "TestFramework/test/Test.h"
+#include "../../../../include/TestFramework/test/tests/Test.h"
 #include "TestFramework/ui/tui/util/ColorUtil.h"
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/event.hpp"
 
 #include <fmt/format.h>
 
@@ -14,26 +15,26 @@ namespace tfw::ui::tui::components {
         false), m_options(options) {
     }
 
-    TestButton::TestButton(test::AbstractTest *test,
+    TestButton::TestButton(tfw::test::tests::AbstractTest *test,
                            const std::function<void(TestButton &button)> &invokeEvent, const Options &options)
         : TestButton(options) {
         this->m_options.invokeEvent = invokeEvent;
         this->m_options.test = test;
     }
 
-    TestButton::TestButton(test::AbstractTest *test,
+    TestButton::TestButton(tfw::test::tests::AbstractTest *test,
                            const std::function<void(TestButton &button)> &invokeEvent) : TestButton(test, invokeEvent, {}) {
     }
 
     std::shared_ptr<TestButton> TestButton::create(
-        test::AbstractTest *test,
+        tfw::test::tests::AbstractTest *test,
         std::function<void(TestButton &button)> invokeEvent,
         Options options) {
         return ftxui::Make<TestButton>(test, invokeEvent, options);
     }
 
     std::shared_ptr<TestButton> TestButton::create(
-        test::AbstractTest *test,
+        tfw::test::tests::AbstractTest *test,
         std::function<void(TestButton &button)> invokeEvent) {
         return ftxui::Make<TestButton>(test, invokeEvent);
     }
@@ -104,7 +105,7 @@ namespace tfw::ui::tui::components {
         return this->m_options.test->watch().started();
     }
 
-    ftxui::Color TestButton::getColor(const test::AbstractTest *test) {
+    ftxui::Color TestButton::getColor(const tfw::test::tests::AbstractTest *test) {
         ftxui::Color color;
         //if running
         if (test->watch().running()) {
@@ -121,7 +122,7 @@ namespace tfw::ui::tui::components {
     }
 
     TestButton::Options::HoverableAnimatedColorOptions TestButton::
-    getColorOptions(const test::AbstractTest *test) {
+    getColorOptions(const tfw::test::tests::AbstractTest *test) {
         const ftxui::Color c = getColor(test);
 
         return {

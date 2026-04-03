@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(tfw VERSION 1.1.2)
+project(tfw VERSION 1.2.0)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -42,7 +42,8 @@ add_subdirectory(lib/ftxui-extensions)
 
 set(FILES
         include/TestFramework/test/result/TestResult.h
-        include/TestFramework/test/ComparableTest.h
+        include/TestFramework/test/tests/ComparableTest.h
+        include/TestFramework/test/tests/Test.h
         src/test/util/ChronoWatch.cpp
         include/TestFramework/test/util/ChronoWatch.h
         include/TestFramework/test/logging/loggers/ITestLogger.h
@@ -72,6 +73,10 @@ set(FILES
         include/TestFramework/test/logging/loggers/TuiTestLogger.h
         src/integration/ArgumIntegration.cpp
         include/TestFramework/integration/ArgumIntegration.h
+        include/TestFramework/test/TestManager.h
+        src/test/TestManager.cpp
+        include/TestFramework/test/tests/AbstractTest.h
+        src/test/tests/AbstractTest.cpp
 )
 
 add_subdirectory(tests)
@@ -81,16 +86,6 @@ add_library(tfw STATIC ${FILES})
 target_include_directories(tfw
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-
-option(TFW_THROW_EXCEPTIONS "Do not swallow exceptions thrown during tests" OFF)
-
-if (TFW_THROW_EXCEPTIONS)
-    target_compile_definitions(tfw
-        PRIVATE TFW_NO_SWALLOW_EXCEPTIONS
-    )
-endif ()
-
-unset(TFW_THROW_EXCEPTIONS CACHE)
 
 target_link_libraries(tfw
         PRIVATE argum::argum

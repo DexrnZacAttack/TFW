@@ -8,6 +8,7 @@
 #include <string>
 #include <string_view>
 #include <exception>
+#include <sstream>
 
 namespace tfw::test::result {
     class TestResult {

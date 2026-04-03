@@ -9,16 +9,16 @@
 
 namespace tfw::integration {
     Argum::Option ArgumIntegration::getUserInterfaceTypeOption(ui::EUserInterface &type) {
-        static Argum::ChoiceParser s_choices;
-        s_choices.addChoice("terminal");
-        s_choices.addChoice("headless");
+        Argum::ChoiceParser choices;
+        choices.addChoice("terminal");
+        choices.addChoice("headless");
 
         return Argum::Option("--ui-mode")
             .help("Changes the UI mode used by TFW.")
-            .argName(s_choices.description())
+            .argName(choices.description())
             .occurs(Argum::zeroOrMoreTimes)
-            .handler([&](const std::string_view value) {
-                type = static_cast<ui::EUserInterface>(s_choices.parse(value));
+            .handler([&type, choices](const std::string_view value) {
+                type = static_cast<ui::EUserInterface>(choices.parse(value));
             });
     }
 }

@@ -3,18 +3,18 @@
 //
 #include "TestFramework/ui/tui/components/TestListComponent.h"
 
-#include "ftxui/component/component.hpp"
+#include "../../../../include/TestFramework/test/tests/Test.h"
 #include "TestFramework/TestFramework.h"
-#include "TestFramework/test/Test.h"
 #include "TestFramework/ui/tui/TerminalUserInterface.h"
 #include "TestFramework/ui/tui/components/TestButton.h"
 #include "TestFramework/ui/tui/components/TestStatusComponent.h"
+#include "ftxui/component/component.hpp"
 
 #include <ranges>
 
 namespace tfw::ui::tui::components {
     TestListComponent::TestListComponent(TerminalUserInterface &tui, TestFramework &framework) : m_tui(tui), m_framework(framework) {
-        this->m_buttons = this->m_framework.tests()
+        this->m_buttons = this->m_framework.testManager().tests()
         | std::views::enumerate
         | std::views::transform([&](auto p) {
             return this->transformTest(p);
@@ -41,7 +41,7 @@ namespace tfw::ui::tui::components {
     }
 
     ftxui::Component TestListComponent::transformTest(
-        std::tuple<long, const std::unique_ptr<test::AbstractTest> &> p) const {
+        std::tuple<long, const std::unique_ptr<tfw::test::tests::AbstractTest> &> p) const {
             auto [i, test] = p;
 
             auto button = TestButton::create(test.get(), [&test, this](auto&) {

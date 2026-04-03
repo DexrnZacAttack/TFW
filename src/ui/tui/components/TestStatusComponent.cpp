@@ -11,12 +11,12 @@ namespace tfw::ui::tui::components {
     }
 
     ftxui::Element TestStatusComponent::OnRender() {
-        int total = m_framework.tests().size();
+        int total = m_framework.testManager().tests().size();
         int failed = 0;
         int succeeded = 0;
         int waiting = 0;
 
-        std::ranges::for_each(m_framework.tests(), [&waiting, &succeeded, &failed](const std::unique_ptr<test::AbstractTest> &test) {
+        std::ranges::for_each(m_framework.testManager().tests(), [&waiting, &succeeded, &failed](const std::unique_ptr<tfw::test::tests::AbstractTest> &test) {
             if (!test->watch().started() || !test->watch().stopped()) {
                 waiting++;
                 return;
